@@ -16,17 +16,27 @@ def add(sum_so_far, num):
 
 def discount_applier(ice_list):
     filtered_ice_list = list(filter(discount_checker, ice_list))
+    unfiltered_ice_list = list(filter(no_discount_checker, ice_list))
     print(f"Filtered Ice List: {filtered_ice_list}")
     print(f"Filtered Ice List: {list(map(price_calculator, filtered_ice_list))}")
-    new_prices = list(map(price_calculator, filtered_ice_list))
-    return functools.reduce(add, new_prices)
+    discounted_prices = list(map(price_calculator, filtered_ice_list))
+    unchanged_prices = list(map(unchanged_price_calculator, unfiltered_ice_list))
+    final_price_list = discounted_prices + unchanged_prices
+    print(f"Total Cost: {functools.reduce(add, final_price_list)}")
+    return functools.reduce(add, final_price_list)
 
 def price_calculator(x):
     return int(x[1] - x[1] * 0.1)
 
+def unchanged_price_calculator(y):
+    return int(y[1])
+
 def discount_checker(item):
     print(f"Item: {item[0] in discounted_flavors}")
     return item[0] in discounted_flavors
+
+def no_discount_checker(price):
+    return price[0] not in discounted_flavors
 
 discount_applier(ice_cream_price_list)
 
